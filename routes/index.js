@@ -21,39 +21,6 @@ router.get("/shop", async (req, res) => {
   }
 });
 
-router.get("/addtocart/:id", isLoggedin, async (req, res) => {
-  try {
-    // Find the logged-in user
-    let user = await userModel.findOne({ email: req.user.email });
-    if (!user) 
-    {
-      req.flash("error", "User not found");
-      return res.redirect("/login");
-    }
-
-    const productIndex = user.cart.findIndex(
-      (item) => item.rid && item.rid.toString() === req.params.id
-    );
-
-    if (productIndex !== -1) {
-      user.cart[productIndex].quantity += 1;
-    } else {
-      user.cart.push({ rid: req.params.id, quantity: 1 });
-    }
-
-    await user.save();
-
-    req.flash("success", "Product added to cart");
-    res.redirect("/shop");
-  } catch (error) {
-    console.error("Error adding to cart:", error);
-    req.flash(
-      "error",
-      "An error occurred while adding the product to the cart"
-    );
-    res.redirect("/shop");
-  }
-});
 
 router.get("/addfromcart/:id", isLoggedin, async (req, res) => {
   try {
